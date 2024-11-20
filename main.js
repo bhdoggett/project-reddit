@@ -39,7 +39,7 @@ const renderPosts = () => {
   const postsDiv = document.getElementsByClassName("posts")[0];
   const allPostDivs = document.getElementsByClassName("post");
 
-  for (let i = 0; i < allPostDivs.length; i++) {
+  for (let i = allPostDivs.length - 1; i >= 0; i--) {
     postsDiv.removeChild(allPostDivs[i]);
   }
 
