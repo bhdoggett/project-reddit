@@ -13,27 +13,13 @@ const addPost = () => {
     comments: [],
   };
 
-  // const commentObject = {
-  //   person: document.getElementById("comment-name").value,
-  //   message: document.getElementById("comment-message").value,
-  //   ID: postID.toString(),
-  // };
+  //for each post I want to create the appropriate divs, etc. with the information i have from the post object in the array
+  // 1. remove button, comments button, postPerson, Post Message with "Posted By:- " prefix
 
-  // postObject.comments.push(commentObject);
   allPosts.push(postObject);
+
   postID++;
 };
-
-// const addComment = () => {
-//   const commentObject = {
-//     person: document.getElementById("comment-name").value,
-//     message: document.getElementById("comment-message").value,
-//     ID: postID.toString(),
-//   };
-
-//   postObject.comments.push(commentObject)
-// }
-const postsDiv = document.getElementsByClassName("posts")[0];
 
 const renderPosts = () => {
   const postsDiv = document.getElementsByClassName("posts")[0];
@@ -55,15 +41,15 @@ const renderPosts = () => {
 
     const remove = document.createElement("button");
     remove.innerHTML = "remove";
-    // remove.style.margin = "5px";
     remove.className = "btn btn-link";
     remove.style.fontWeight = "bold";
 
-    // const hr = document.createElement("hr");
+    const newPost = document.createElement("div");
+    newPost.setAttribute("class", "post");
+    newPost.setAttribute("data-postID", postID); // DO I NEED THIS?
 
     const commentsButton = document.createElement("button");
     commentsButton.innerHTML = "comments";
-    // commentsButton.style.marginRight = "5px";
     commentsButton.className = "btn btn-link";
     commentsButton.style.fontWeight = "bold";
     commentsButton.style.display = "inline-block";
@@ -72,13 +58,13 @@ const renderPosts = () => {
     commentSection.className = "comments";
     // commentSection.style.display = "none";
 
-    const comments = document.createElement("div");
-    comments.className = "comments";
-    commentSection.appendChild(comments);
+    // const comments = document.createElement("div");
+    // comments.className = "comments";
+    // commentSection.appendChild(comments);
 
     const commentForm = document.createElement("form");
     commentForm.style = "margin-top:30px";
-    commentForm.onsubmit = "event.preventDefault()";
+    commentForm.onsubmit = (event) => event.preventDefault();
 
     const commentHeader = document.createElement("h3");
     commentHeader.innerHTML = "Add a Comment";
@@ -109,41 +95,73 @@ const renderPosts = () => {
 
     commentSection.appendChild(commentForm);
 
-    // const addCommentSection = () => {
-    //   const commentForm = document.createElement("form");
-    //   commentForm.style = "margin-top:30px";
-    //   commentForm.onsubmit = "event.preventDefault()";
+    const addComment = () => {
+      const commentObject = {
+        person: document.getElementById("comment-name").value,
+        message: document.getElementById("comment-message").value,
+        ID: postID.toString(),
+        status: "live", // deleted comments will have a value of 'deleted'
+      };
 
-    //   const commentHeader = document.createElement("h3");
-    //   commentHeader.innerHTML = "Add a Comment";
+      allPosts[i].comments.push(commentObject);
+    };
 
-    //   const commentMessageDiv = document.createElement("div");
-    //   commentMessageDiv.className = "form-group";
+    const commentSubmitButton = document.createElement("button");
+    commentSubmitButton.id = "submit-comment";
+    commentSubmitButton.class = "btn btn-primary";
+    commentSubmitButton.innerHTML = "Submit Comment";
+    commentForm.appendChild(commentSubmitButton);
 
-    //   const commentMessageArea = document.createElement("textarea");
-    //   commentMessageArea.id = "comment-message";
-    //   commentMessageArea.type = "text";
-    //   commentMessageArea.class = "form-control";
-    //   commentMessageArea.placeholder = "Your comment";
+    const renderComments = () => {
+      const commentUl = document.createElement("ul");
 
-    //   commentMessageDiv.appendChild(commentMessageArea);
+      // for (let c = allPostDivs[i].length - 1; c >= 0; c--) {
+      //   commentSection.removeChild(allPostDivs[i]);
+      // }
 
-    //   const commenterDiv = document.createElement("div");
-    //   commenterDiv.className = "form-group";
+      for (let c = 0; c < allPosts[i].comments.length; c++) {
+        const commentBy = document.createElement(
+          "span",
+          allPosts[i].comments[c].person
+        );
 
-    //   const commenterInputField = document.createElement("input");
-    //   commenterInputField.id = "comment-name";
-    //   commenterInputField.type = "text";
-    //   commenterInputField.class = "form-control";
-    //   commenterInputField.placeholder = "Your Name";
-    //   commenterDiv.appendChild(commenterInputField);
+        const commentLi = document.createElement("li");
 
-    // }
+        const x = document.createElement("button");
+        x.innerHTML = "X";
+        x.className = "btn btn-link";
+        x.style.fontWeight = "bold";
 
-    const newPost = document.createElement("div");
-    // newPost.style.margin = "20px";
-    newPost.setAttribute("class", "post");
-    newPost.setAttribute("data-postID", postID); // DO I NEED THIS?
+        x.addEventListener("click", function () {
+          commentUl.removeChild(commentLi);
+        });
+
+        commentBy.style.fontWeight = "500";
+        commentBy.innerHTML = ` - Comment By: ${allPosts[i].comments[i].person}`;
+
+        const commentMessage = document.createElement("span");
+        commentMessage.innerHTML = allPosts[i].comments[c].message;
+
+        commentLi.appendChild(x);
+        commentLi.appendChild(commentMessage);
+        commentLi.appendChild(commentBy);
+        commentUl.appendChild(commentLi);
+
+        commentSection.appendChild(commentUl);
+      }
+    };
+    commentsButton.addEventListener("click", () => {
+      //toggle comments secotn on off while toggling the posts form off and on
+    });
+
+    commentSubmitButton.addEventListener("click", () => {
+      addComment();
+      renderComments();
+    });
+
+    commentSection.appendChild(commentForm);
+
+    renderComments();
 
     newPost.appendChild(remove);
     newPost.appendChild(commentsButton);
@@ -158,73 +176,6 @@ const renderPosts = () => {
       postsDiv.removeChild(newPost);
     });
 
-    const toggleCommentsOn = () => {
-      postForm.style.display = "none";
-      commentSection.style.display = "block";
-    };
-
-    const toggleCommentsOff = () => {
-      postForm.style.display = "block";
-      commentSection.style.display = "none";
-    };
-
-    const commentSubmitButton = document.createElement("button");
-    commentSubmitButton.id = "submit-comment";
-    commentSubmitButton.class = "btn btn-primary";
-    commentSubmitButton.innerHTML = "Submit Comment";
-
-    //for each post I want to create the appropriate divs, etc. with the information i have from the post object in the array
-    // 1. remove button, comments button, postPerson, Post Message with "Posted By:- " prefix
-
-    const addComment = function () {
-      const commentObject = {
-        person: document.getElementById("comment-name").value,
-        message: document.getElementById("comment-message").value,
-        ID: postID.toString(),
-      };
-      // parseInt(newPost.getAttribute("data-votes"), 10)
-
-      // const commentBy = ` - Comment By: ${commentObject.person}`;
-      // // const message = document.getElementById("message").value;
-      const commentDiv = document.createElement("div")[0];
-
-      const x = document.createElement("button");
-      remove.innerHTML = "X";
-      // remove.style.margin = "5px";
-      remove.className = "btn btn-link";
-      remove.style.fontWeight = "bold";
-
-      x.addEventListener("click", function () {
-        commentSection.removeChild(commentDiv);
-      });
-
-      const commentOwner = document.createElement("span", commentObject.person);
-      commentOwner.style.fontWeight = "500";
-      commentOwner.innerHTML = ` - Comment By: ${commentObject.person}`;
-
-      const commentMessage = document.createElement("span");
-      postMessage.innerHTML = postObject.message;
-
-      commentDiv.appendChild(x);
-      commentDiv.appendChild(commentOwner);
-      commentDiv.appendChild(commentMessage);
-
-      postObject.comments.push(commentObject);
-    };
-
-    commentSubmitButton.addEventListener("click", addComment);
-
-    // () => {
-    //   toggleCommentsOff();
-    //   // need to add the value of the comment message and the commentor to the post, and also need to toggle the comment form away and restore the add post form
-    //   postForm.style.display = "block";
-    // });
-
-    commentForm.appendChild(commentHeader);
-    commentForm.appendChild(commentMessageDiv);
-    commentForm.appendChild(commenterDiv);
-    commentForm.appendChild(commentSubmitButton);
-
     if (
       document.getElementById("name").value &&
       document.getElementById("message").value
@@ -238,5 +189,12 @@ const renderPosts = () => {
 
 renderPosts();
 
-postButton.addEventListener("click", addPost);
-postButton.addEventListener("click", renderPosts);
+postButton.addEventListener("click", (event) => {
+  event.preventDefault();
+  addPost();
+});
+postButton.addEventListener("click", (event) => {
+  event.preventDefault();
+  renderPosts();
+});
+// postButton.addEventListener("click", renderPosts);

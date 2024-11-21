@@ -9,3 +9,11 @@
   line-height: inherit;
   padding: 0;
 }
+
+.show {
+  display: block;
+}
+
+.hide {
+  display: none;
+}
