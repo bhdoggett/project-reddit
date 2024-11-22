@@ -76,6 +76,7 @@ const renderPosts = () => {
 
     const commentSection = document.createElement("div");
     commentSection.className = "comments";
+    commentSection.style.margin = "30px 50px 30px 50px";
     commentSection.style.display = "none";
 
     const commentUl = document.createElement("ul");
@@ -86,8 +87,8 @@ const renderPosts = () => {
     commentForm.className;
     commentForm.onsubmit = (event) => event.preventDefault();
 
-    const commentHeader = document.createElement("h3");
-    commentHeader.innerHTML = "Add a Comment";
+    const commentHeader = document.createElement("h4");
+    commentHeader.innerHTML = "Add a comment";
     commentForm.appendChild(commentHeader);
 
     const commentMessageDiv = document.createElement("div");
@@ -209,11 +210,13 @@ const renderPosts = () => {
 
     // renderComments();
 
+    const hr = document.createElement("hr");
     newPost.appendChild(remove);
     newPost.appendChild(commentsButton);
     newPost.appendChild(postMessage);
     newPost.appendChild(postOwner);
     newPost.appendChild(commentSection);
+    newPost.appendChild(hr);
 
     // newPost.appendChild(hr);
 
