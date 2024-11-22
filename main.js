@@ -12,6 +12,16 @@ const removeElementByClass = (elementClass) => {
   }
 };
 
+const toggle = (section) => {
+  if (section.classList.contains("take-precedence")) {
+    section.className = "comments";
+    section.style.display = "none";
+  } else {
+    section.className += " take-precedence";
+    section.style.display = "block";
+  }
+};
+
 let postID = 0;
 
 const addPost = () => {
@@ -51,16 +61,17 @@ const renderPosts = () => {
   for (let p = 0; p < allPosts.length; p++) {
     const postedBy = ` - Posted By: ${allPosts[p].person}`;
 
-    const postOwner = document.createElement("span", postedBy);
+    const postOwner = document.createElement("p", postedBy);
     postOwner.style.fontWeight = "500";
     postOwner.innerHTML = ` - Posted By: ${allPosts[p].person}`;
 
-    const postMessage = document.createElement("span");
+    const postMessage = document.createElement("p");
     postMessage.innerHTML = allPosts[p].message;
 
     const remove = document.createElement("button");
     remove.innerHTML = "remove";
     remove.className = "btn btn-link";
+    remove.style.color = "rgb(171, 76, 76)";
     remove.style.fontWeight = "bold";
 
     const newPost = document.createElement("div");
@@ -71,6 +82,7 @@ const renderPosts = () => {
     const commentsButton = document.createElement("button");
     commentsButton.innerHTML = "comments";
     commentsButton.className = "btn btn-link";
+    commentsButton.style.color = "cadetblue";
     commentsButton.style.fontWeight = "bold";
     commentsButton.style.display = "inline-block";
 
@@ -130,7 +142,8 @@ const renderPosts = () => {
 
     const commentSubmitButton = document.createElement("button");
     commentSubmitButton.id = "submit-comment";
-    commentSubmitButton.class = "btn btn-primary";
+    commentSubmitButton.className = "btn btn-primary";
+    commentSubmitButton.style.backgroundColor = "cadetblue";
     commentSubmitButton.innerHTML = "Submit Comment";
     commentForm.appendChild(commentSubmitButton);
 
@@ -180,27 +193,14 @@ const renderPosts = () => {
     commentSubmitButton.addEventListener("click", () => {
       addComment();
       renderComments();
-      // commentSection.className = "comments";
-      // commentSection.style.display = "none";
-      ///
       document.getElementById(`comment-message-input-${p}`).value = "";
       document.getElementById(`comment-name-input-${p}`).value = "";
-      // commentSection.className = "hide";
-      // postForm.className = "show";
     });
 
     commentSection.appendChild(commentUl);
     commentSection.appendChild(commentForm);
 
-    commentsButton.addEventListener("click", () => {
-      if (commentSection.classList.contains("take-precedence")) {
-        commentSection.className = "comments";
-        commentSection.style.display = "none";
-      } else {
-        commentSection.className += " take-precedence";
-        commentSection.style.display = "block";
-      }
-    });
+    commentsButton.addEventListener("click", () => toggle(commentSection));
 
     const editPostButton = document.createElement("button");
     editPostButton.innerHTML = "edit post";
@@ -211,9 +211,10 @@ const renderPosts = () => {
 
     const editPostForm = document.createElement("form");
     editPostForm.style = "margin-top:30px";
+    editPostForm.className = "post";
     editPostForm.style.display = "none";
     editPostForm.onsubmit = (event) => event.preventDefault();
-    editPostForm.style.margin = "30px 20px 30px 70px";
+    // editPostForm.style.margin = "30px 20px 30px 70px";
 
     const editPostMessageDiv = document.createElement("div");
     editPostMessageDiv.className = "form-group";
@@ -227,19 +228,12 @@ const renderPosts = () => {
 
     editPostMessageDiv.appendChild(editPostMessageArea);
     editPostForm.appendChild(editPostMessageDiv);
-    editPostButton.addEventListener("click", () => {
-      if (editPostForm.classList.contains("take-precedence")) {
-        editPostForm.className = "";
-        editPostForm.style.display = "none";
-      } else {
-        editPostForm.className += " take-precedence";
-        editPostForm.style.display = "block";
-      }
-    });
+    editPostButton.addEventListener("click", () => toggle(editPostForm));
 
     const submitEditedPostButton = document.createElement("button");
     submitEditedPostButton.id = "submit-edited-post";
-    submitEditedPostButton.class = "btn btn-primary";
+    submitEditedPostButton.className = "btn btn-primary";
+    submitEditedPostButton.style.backgroundColor = "green";
     submitEditedPostButton.innerHTML = "Update Post";
 
     submitEditedPostButton.addEventListener("click", () => {
@@ -252,13 +246,7 @@ const renderPosts = () => {
 
       renderPosts();
 
-      if (commentSection.classList.contains("take-precedence")) {
-        editPostForm.className += " take-precedence";
-        editPostForm.style.display = "block";
-      } else {
-        editPostForm.className = "";
-        editPostForm.style.display = "none";
-      }
+      toggle(editPostForm);
     });
 
     editPostForm.appendChild(editPostMessageDiv);
@@ -267,10 +255,10 @@ const renderPosts = () => {
 
     const hr = document.createElement("hr");
 
-    newPost.appendChild(remove);
-    newPost.appendChild(commentsButton);
     newPost.appendChild(postMessage);
     newPost.appendChild(postOwner);
+    newPost.appendChild(remove);
+    newPost.appendChild(commentsButton);
     newPost.appendChild(editPostButton);
     newPost.appendChild(editPostForm);
     newPost.appendChild(commentSection);
