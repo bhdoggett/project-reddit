@@ -84,7 +84,6 @@ const renderPosts = () => {
 
     const commentForm = document.createElement("form");
     commentForm.style = "margin-top:30px";
-    commentForm.className;
     commentForm.onsubmit = (event) => event.preventDefault();
 
     const commentHeader = document.createElement("h4");
@@ -210,11 +209,55 @@ const renderPosts = () => {
 
     // renderComments();
 
+    const editPostButton = document.createElement("button");
+    editPostButton.innerHTML = "edit post";
+    editPostButton.className = "btn btn-link";
+    editPostButton.style.fontWeight = "bold";
+    editPostButton.style.display = "inline-block";
+    editPostButton.style.color = "green";
+
+    const editPostForm = document.createElement("form");
+    editPostForm.style = "margin-top:30px";
+    editPostForm.className = "hide";
+    editPostForm.onsubmit = (event) => event.preventDefault();
+    editPostForm.style.margin = "30px 20px 30px 70px";
+
+    const editPostMessageDiv = document.createElement("div");
+    editPostMessageDiv.className = "form-group";
+
+    const editPostMessageArea = document.createElement("textarea");
+    editPostMessageArea.id = `update-message-input-${p}`;
+    editPostMessageArea.type = "text";
+    editPostMessageArea.className = "form-control";
+    editPostMessageArea.value = allPosts[p].message;
+    postMessage.innerHTML = editPostMessageArea.value;
+
+    editPostMessageDiv.appendChild(editPostMessageArea);
+
+    editPostButton.addEventListener("click", () => {
+      //toggle the editPostForm to appear
+    });
+
+    const submitEditedPostButton = document.createElement("button");
+    submitEditedPostButton.id = "submit-edited-post";
+    submitEditedPostButton.class = "btn btn-primary";
+    submitEditedPostButton.innerHTML = "Update Post";
+    submitEditedPostButton.addEventListener("click", () => {
+      // update value of the original post message
+      //toggle the form to hide
+    });
+    editPostForm.appendChild(editPostMessageDiv);
+    editPostForm.appendChild(submitEditedPostButton);
+    editPostForm.appendChild(submitEditedPostButton);
+
     const hr = document.createElement("hr");
+
     newPost.appendChild(remove);
     newPost.appendChild(commentsButton);
     newPost.appendChild(postMessage);
     newPost.appendChild(postOwner);
+    newPost.appendChild(editPostButton);
+    newPost.appendChild(editPostForm);
     newPost.appendChild(commentSection);
     newPost.appendChild(hr);
 
