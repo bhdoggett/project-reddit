@@ -1,6 +1,4 @@
 const postButton = document.getElementById("submit-post");
-let postMessage = document.getElementById("message").value;
-let postName = document.getElementById("name").value;
 const postForm = document.getElementById("post-form");
 const allPosts = [];
 
@@ -13,22 +11,37 @@ const removeElementByClass = (elementClass) => {
     element.remove();
   }
 };
+
 let postID = 0;
 
 const addPost = () => {
-  const postObject = {
-    person: document.getElementById("name").value,
-    message: document.getElementById("message").value,
-    ID: postID,
-    comments: [],
-  };
+  if (
+    !document.getElementById("name").value ||
+    !document.getElementById("message").value
+  ) {
+    alert("Please enter a message and your name.");
+  } else {
+    const postObject = {
+      person: document.getElementById("name").value,
+      message: document.getElementById("message").value,
+      ID: postID,
+      comments: [],
+    };
 
-  allPosts.push(postObject);
+    allPosts.push(postObject);
+  }
 };
 
 const renderPosts = () => {
   const postsDiv = document.getElementsByClassName("posts")[0];
   // const allPostDivs = document.getElementsByClassName("post"); // DO I NEED THIS??
+
+  if (
+    !document.getElementById("name").value ||
+    !document.getElementById("message").value
+  ) {
+    return;
+  }
 
   if (document.getElementsByClassName("post")[0]) {
     removeElementByClass("post");
@@ -213,6 +226,8 @@ const renderPosts = () => {
       }
     });
 
+    postsDiv.appendChild(newPost);
+
     if (
       document.getElementById("name").value &&
       document.getElementById("message").value
@@ -220,13 +235,14 @@ const renderPosts = () => {
       postsDiv.appendChild(newPost);
     } else {
       alert("Please enter a message and your name.");
-      break;
     }
+
     postID++;
   }
+  postID = 0;
 };
 
-postID = 0;
+// postID = 0;
 // renderPosts();
 
 postButton.addEventListener("click", (event) => {
