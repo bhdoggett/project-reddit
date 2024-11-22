@@ -1,43 +1,49 @@
 const postButton = document.getElementById("submit-post");
+let postMessage = document.getElementById("message").value;
+let postName = document.getElementById("name").value;
 const postForm = document.getElementById("post-form");
 const allPosts = [];
 
+const removeElementByClass = (elementClass) => {
+  const allElementsWithClass = Array.from(
+    document.getElementsByClassName(elementClass)
+  );
+  for (let i = 0; i < allElementsWithClass.length; i++) {
+    const element = allElementsWithClass[i];
+    element.remove();
+  }
+};
 let postID = 0;
-let commentID = 0;
 
 const addPost = () => {
   const postObject = {
     person: document.getElementById("name").value,
     message: document.getElementById("message").value,
-    ID: postID.toString(),
+    ID: postID,
     comments: [],
   };
 
-  //for each post I want to create the appropriate divs, etc. with the information i have from the post object in the array
-  // 1. remove button, comments button, postPerson, Post Message with "Posted By:- " prefix
-
   allPosts.push(postObject);
-
-  postID++;
 };
 
 const renderPosts = () => {
   const postsDiv = document.getElementsByClassName("posts")[0];
-  const allPostDivs = document.getElementsByClassName("post");
+  // const allPostDivs = document.getElementsByClassName("post"); // DO I NEED THIS??
 
-  for (let i = allPostDivs.length - 1; i >= 0; i--) {
-    postsDiv.removeChild(allPostDivs[i]);
+  if (document.getElementsByClassName("post")[0]) {
+    removeElementByClass("post");
   }
 
-  for (let i = 0; i < allPosts.length; i++) {
-    const postedBy = ` - Posted By: ${allPosts[i].person}`;
+  // let postIndex = 0;
+  for (let p = 0; p < allPosts.length; p++) {
+    const postedBy = ` - Posted By: ${allPosts[p].person}`;
 
     const postOwner = document.createElement("span", postedBy);
     postOwner.style.fontWeight = "500";
-    postOwner.innerHTML = ` - Posted By: ${allPosts[i].person}`;
+    postOwner.innerHTML = ` - Posted By: ${allPosts[p].person}`;
 
     const postMessage = document.createElement("span");
-    postMessage.innerHTML = allPosts[i].message;
+    postMessage.innerHTML = allPosts[p].message;
 
     const remove = document.createElement("button");
     remove.innerHTML = "remove";
@@ -46,7 +52,8 @@ const renderPosts = () => {
 
     const newPost = document.createElement("div");
     newPost.setAttribute("class", "post");
-    newPost.setAttribute("data-postID", postID); // DO I NEED THIS?
+    newPost.setAttribute("id", `postindex-${p}`);
+    // newPost.setAttribute("data-postIndex", p); // DO I NEED THIS?
 
     const commentsButton = document.createElement("button");
     commentsButton.innerHTML = "comments";
@@ -56,14 +63,14 @@ const renderPosts = () => {
 
     const commentSection = document.createElement("div");
     commentSection.className = "comments";
-    // commentSection.style.display = "none";
+    commentSection.style.display = "none";
 
-    // const comments = document.createElement("div");
-    // comments.className = "comments";
-    // commentSection.appendChild(comments);
+    const commentUl = document.createElement("ul");
+    commentSection.appendChild(commentUl);
 
     const commentForm = document.createElement("form");
     commentForm.style = "margin-top:30px";
+    commentForm.className;
     commentForm.onsubmit = (event) => event.preventDefault();
 
     const commentHeader = document.createElement("h3");
@@ -74,9 +81,9 @@ const renderPosts = () => {
     commentMessageDiv.className = "form-group";
 
     const commentMessageArea = document.createElement("textarea");
-    commentMessageArea.id = "comment-message";
+    commentMessageArea.id = `comment-message-input-${p}`;
     commentMessageArea.type = "text";
-    commentMessageArea.class = "form-control";
+    commentMessageArea.className = "form-control";
     commentMessageArea.placeholder = "Your comment";
 
     commentMessageDiv.appendChild(commentMessageArea);
@@ -86,24 +93,26 @@ const renderPosts = () => {
     commenterDiv.className = "form-group";
 
     const commenterInputField = document.createElement("input");
-    commenterInputField.id = "comment-name";
+    commenterInputField.id = `comment-name-input-${p}`;
     commenterInputField.type = "text";
-    commenterInputField.class = "form-control";
+    commenterInputField.className = "form-control";
     commenterInputField.placeholder = "Your Name";
     commenterDiv.appendChild(commenterInputField);
     commentForm.appendChild(commenterDiv);
 
-    commentSection.appendChild(commentForm);
+    let commentID = 0;
 
     const addComment = () => {
       const commentObject = {
-        person: document.getElementById("comment-name").value,
-        message: document.getElementById("comment-message").value,
-        ID: postID.toString(),
+        person: document.getElementById(`comment-name-input-${p}`).value,
+        message: document.getElementById(`comment-message-input-${p}`).value,
+        ID: commentID.toString(),
         status: "live", // deleted comments will have a value of 'deleted'
       };
 
-      allPosts[i].comments.push(commentObject);
+      allPosts[p].comments.push(commentObject);
+
+      commentID++;
     };
 
     const commentSubmitButton = document.createElement("button");
@@ -113,19 +122,24 @@ const renderPosts = () => {
     commentForm.appendChild(commentSubmitButton);
 
     const renderComments = () => {
-      const commentUl = document.createElement("ul");
-
-      // for (let c = allPostDivs[i].length - 1; c >= 0; c--) {
-      //   commentSection.removeChild(allPostDivs[i]);
+      // for (let c = allPostDivs[p].length - 1; c >= 0; c--) {
+      //   commentSection.removeChild(allPostDivs[p]);
       // }
 
-      for (let c = 0; c < allPosts[i].comments.length; c++) {
+      if (document.getElementsByClassName(`commentSection-${p}`)) {
+        removeElementByClass(`commentSection-${p}`);
+      }
+
+      for (let c = 0; c < allPosts[p].comments.length; c++) {
         const commentBy = document.createElement(
           "span",
-          allPosts[i].comments[c].person
+          allPosts[p].comments[c].person
         );
+        commentBy.style.fontWeight = "500";
+        commentBy.innerHTML = ` - Comment By: ${allPosts[p].comments[c].person}`;
 
-        const commentLi = document.createElement("li");
+        const commentMessage = document.createElement("span");
+        commentMessage.innerHTML = allPosts[p].comments[c].message;
 
         const x = document.createElement("button");
         x.innerHTML = "X";
@@ -134,34 +148,53 @@ const renderPosts = () => {
 
         x.addEventListener("click", function () {
           commentUl.removeChild(commentLi);
+          allPosts[p].comments.splice([c], 1);
         });
 
-        commentBy.style.fontWeight = "500";
-        commentBy.innerHTML = ` - Comment By: ${allPosts[i].comments[i].person}`;
-
-        const commentMessage = document.createElement("span");
-        commentMessage.innerHTML = allPosts[i].comments[c].message;
+        const commentLi = document.createElement("li");
+        commentLi.className = `comment commentSection-${p}`;
+        // commentLi.className = "comment";
 
         commentLi.appendChild(x);
         commentLi.appendChild(commentMessage);
         commentLi.appendChild(commentBy);
         commentUl.appendChild(commentLi);
-
-        commentSection.appendChild(commentUl);
       }
     };
-    commentsButton.addEventListener("click", () => {
-      //toggle comments secotn on off while toggling the posts form off and on
-    });
 
     commentSubmitButton.addEventListener("click", () => {
       addComment();
       renderComments();
+      document.getElementById(`comment-message-input-${p}`).value = "";
+      document.getElementById(`comment-name-input-${p}`).value = "";
+      // commentSection.className = "hide";
+      // postForm.className = "show";
     });
 
+    commentSection.appendChild(commentUl);
     commentSection.appendChild(commentForm);
 
-    renderComments();
+    commentsButton.addEventListener("click", () => {
+      if (commentSection.classList.contains("show")) {
+        commentSection.className = "comments";
+        postForm.className = "show";
+      } else {
+        commentSection.className += " show";
+        postForm.className = "hide";
+      }
+
+      // if (commentSection.className === "comments hide") {
+      //   commentSection.className = "comments show";
+      //   postForm.className = "hide";
+      // }
+
+      // if (commentSection.className === "comments show") {
+      //   commentSection.className = "hide";
+      //   postForm.className = "show";
+      // }
+    });
+
+    // renderComments();
 
     newPost.appendChild(remove);
     newPost.appendChild(commentsButton);
@@ -172,8 +205,12 @@ const renderPosts = () => {
     // newPost.appendChild(hr);
 
     remove.addEventListener("click", function () {
-      allPosts.splice([i], 1);
+      allPosts.splice([p], 1);
       postsDiv.removeChild(newPost);
+
+      if (postForm.className === "hide") {
+        postForm.className = "show";
+      }
     });
 
     if (
@@ -183,18 +220,19 @@ const renderPosts = () => {
       postsDiv.appendChild(newPost);
     } else {
       alert("Please enter a message and your name.");
+      break;
     }
+    postID++;
   }
 };
 
-renderPosts();
+postID = 0;
+// renderPosts();
 
 postButton.addEventListener("click", (event) => {
   event.preventDefault();
   addPost();
-});
-postButton.addEventListener("click", (event) => {
-  event.preventDefault();
   renderPosts();
+  document.getElementById("message").value = "";
+  document.getElementById("name").value = "";
 });
-// postButton.addEventListener("click", renderPosts);
