@@ -76,7 +76,7 @@ const renderPosts = () => {
 
     const commentSection = document.createElement("div");
     commentSection.className = "comments";
-    commentSection.style.margin = "30px 50px 30px 50px";
+    // commentSection.style.margin = "30px 50px 30px 50px";
     commentSection.style.display = "none";
 
     const commentUl = document.createElement("ul");
@@ -175,9 +175,14 @@ const renderPosts = () => {
       }
     };
 
+    renderComments();
+
     commentSubmitButton.addEventListener("click", () => {
       addComment();
       renderComments();
+      // commentSection.className = "comments";
+      // commentSection.style.display = "none";
+      ///
       document.getElementById(`comment-message-input-${p}`).value = "";
       document.getElementById(`comment-name-input-${p}`).value = "";
       // commentSection.className = "hide";
@@ -188,26 +193,14 @@ const renderPosts = () => {
     commentSection.appendChild(commentForm);
 
     commentsButton.addEventListener("click", () => {
-      if (commentSection.classList.contains("show")) {
+      if (commentSection.classList.contains("take-precedence")) {
         commentSection.className = "comments";
-        postForm.className = "show";
+        commentSection.style.display = "none";
       } else {
-        commentSection.className += " show";
-        postForm.className = "hide";
+        commentSection.className += " take-precedence";
+        commentSection.style.display = "block";
       }
-
-      // if (commentSection.className === "comments hide") {
-      //   commentSection.className = "comments show";
-      //   postForm.className = "hide";
-      // }
-
-      // if (commentSection.className === "comments show") {
-      //   commentSection.className = "hide";
-      //   postForm.className = "show";
-      // }
     });
-
-    // renderComments();
 
     const editPostButton = document.createElement("button");
     editPostButton.innerHTML = "edit post";
@@ -218,7 +211,7 @@ const renderPosts = () => {
 
     const editPostForm = document.createElement("form");
     editPostForm.style = "margin-top:30px";
-    editPostForm.className = "hide";
+    editPostForm.style.display = "none";
     editPostForm.onsubmit = (event) => event.preventDefault();
     editPostForm.style.margin = "30px 20px 30px 70px";
 
@@ -233,19 +226,41 @@ const renderPosts = () => {
     postMessage.innerHTML = editPostMessageArea.value;
 
     editPostMessageDiv.appendChild(editPostMessageArea);
-
+    editPostForm.appendChild(editPostMessageDiv);
     editPostButton.addEventListener("click", () => {
-      //toggle the editPostForm to appear
+      if (editPostForm.classList.contains("take-precedence")) {
+        editPostForm.className = "";
+        editPostForm.style.display = "none";
+      } else {
+        editPostForm.className += " take-precedence";
+        editPostForm.style.display = "block";
+      }
     });
 
     const submitEditedPostButton = document.createElement("button");
     submitEditedPostButton.id = "submit-edited-post";
     submitEditedPostButton.class = "btn btn-primary";
     submitEditedPostButton.innerHTML = "Update Post";
+
     submitEditedPostButton.addEventListener("click", () => {
-      // update value of the original post message
-      //toggle the form to hide
+      if (!editPostMessageArea.value) {
+        alert("No input given.");
+      } else {
+        allPosts[p].message = editPostMessageArea.value;
+        postMessage.innerHTML = allPosts[p].message;
+      }
+
+      renderPosts();
+
+      if (commentSection.classList.contains("take-precedence")) {
+        editPostForm.className += " take-precedence";
+        editPostForm.style.display = "block";
+      } else {
+        editPostForm.className = "";
+        editPostForm.style.display = "none";
+      }
     });
+
     editPostForm.appendChild(editPostMessageDiv);
     editPostForm.appendChild(submitEditedPostButton);
     editPostForm.appendChild(submitEditedPostButton);

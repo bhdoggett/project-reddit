@@ -21,3 +21,14 @@
 ul {
   list-style-type: none;
 }
+
+.take-precedence {
+  position: relative;
+  display: block;
+  width: 100%;
+  /* height: 100%; */
+  /* padding: 10px 200px 200px 200px; */
+  padding: 10px 50px 10px 50px;
+  background-color: white;
+  margin: 0%;
+}
