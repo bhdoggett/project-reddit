@@ -1,15 +1,3 @@
-/* .text-button {
-  background-color: transparent;
-  border-width: 0;
-  font-family: inherit;
-  font-size: inherit;
-  font-style: inherit;
-  font-weight: bold;
-  color: blue;
-  line-height: inherit;
-  padding: 0;
-} */
-
 .show {
   display: block;
 }
@@ -22,21 +10,6 @@ ul {
   list-style-type: none;
 }
 
-/* .take-precedence {
-  position: absolute;
-  display: block;
-  width: 100%;
-  height: 100%;
-  padding: 10px 200px 200px 200px;
-  padding: 10px 50px 10px 50px;
-  background-color: white;
-  margin: 0%;
-} */
-
 .button {
   color: rgb(171, 76, 76);
 }
-/* .post:hover {
-  background-color: rgb(241, 241, 241);
-  border-color: rgb(146, 146, 146);
-} */
