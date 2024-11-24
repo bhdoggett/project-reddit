@@ -1,6 +1,7 @@
 const postButton = document.getElementById("submit-post");
 const postForm = document.getElementById("post-form");
 const allPosts = [];
+let postID = 0;
 
 const removeElementByClass = (elementClass) => {
   const allElementsWithClass = Array.from(
@@ -34,8 +35,6 @@ const toggleSection = (section) => {
     }
   }
 };
-
-let postID = 0;
 
 const addPost = () => {
   if (
@@ -84,11 +83,18 @@ const renderPosts = () => {
     remove.className = "btn btn-link";
     remove.style.color = "rgb(171, 76, 76)";
     remove.style.fontWeight = "bold";
+    remove.addEventListener("click", () => {
+      allPosts.splice([p], 1);
+      postsDiv.removeChild(newPost);
+
+      if (postForm.className === "hide") {
+        postForm.className = "show";
+      }
+    });
 
     const newPost = document.createElement("div");
     newPost.setAttribute("class", "post");
     newPost.setAttribute("id", `postindex-${p}`);
-    // newPost.setAttribute("data-postIndex", p); // DO I NEED THIS?
 
     const commentsButton = document.createElement("button");
     commentsButton.innerHTML = "comments";
@@ -100,13 +106,11 @@ const renderPosts = () => {
     const commentSection = document.createElement("div");
     commentSection.className = "comments toggle hide";
     commentSection.style.margin = "10px 50px 10px 50px";
-    // commentSection.style.display = "none";
 
     const commentUl = document.createElement("ul");
     commentSection.appendChild(commentUl);
 
     const commentForm = document.createElement("form");
-    // commentForm.className = "toggle";
     commentForm.style = "margin-top:30px";
     commentForm.onsubmit = (event) => event.preventDefault();
 
@@ -144,7 +148,6 @@ const renderPosts = () => {
         person: document.getElementById(`comment-name-input-${p}`).value,
         message: document.getElementById(`comment-message-input-${p}`).value,
         ID: commentID.toString(),
-        status: "live", // deleted comments will have a value of 'deleted'
       };
 
       allPosts[p].comments.push(commentObject);
@@ -160,10 +163,6 @@ const renderPosts = () => {
     commentForm.appendChild(commentSubmitButton);
 
     const renderComments = () => {
-      // for (let c = allPostDivs[p].length - 1; c >= 0; c--) {
-      //   commentSection.removeChild(allPostDivs[p]);
-      // }
-
       if (document.getElementsByClassName(`commentSection-${p}`)) {
         removeElementByClass(`commentSection-${p}`);
       }
@@ -182,16 +181,16 @@ const renderPosts = () => {
         const x = document.createElement("button");
         x.innerHTML = "X";
         x.className = "btn btn-link";
+        x.style.color = "cadetblue";
         x.style.fontWeight = "bold";
 
-        x.addEventListener("click", function () {
+        x.addEventListener("click", () => {
           commentUl.removeChild(commentLi);
           allPosts[p].comments.splice([c], 1);
         });
 
         const commentLi = document.createElement("li");
         commentLi.className = `comment commentSection-${p}`;
-        // commentLi.className = "comment";
 
         commentLi.appendChild(x);
         commentLi.appendChild(commentMessage);
@@ -226,9 +225,7 @@ const renderPosts = () => {
     const editPostForm = document.createElement("form");
     editPostForm.style = "margin:30px 50px 30px 50px";
     editPostForm.className = "post toggle hide";
-    // editPostForm.style.display = "none";
     editPostForm.onsubmit = (event) => event.preventDefault();
-    // editPostForm.style.margin = "30px 20px 30px 70px";
 
     const editPostMessageDiv = document.createElement("div");
     editPostMessageDiv.className = "form-group";
@@ -278,17 +275,6 @@ const renderPosts = () => {
     newPost.appendChild(commentSection);
     newPost.appendChild(hr);
 
-    // newPost.appendChild(hr);
-
-    remove.addEventListener("click", function () {
-      allPosts.splice([p], 1);
-      postsDiv.removeChild(newPost);
-
-      if (postForm.className === "hide") {
-        postForm.className = "show";
-      }
-    });
-
     postsDiv.appendChild(newPost);
 
     if (
@@ -302,11 +288,7 @@ const renderPosts = () => {
 
     postID++;
   }
-  postID = 0;
 };
-
-// postID = 0;
-// renderPosts();
 
 postButton.addEventListener("click", (event) => {
   event.preventDefault();
