@@ -12,13 +12,26 @@ const removeElementByClass = (elementClass) => {
   }
 };
 
-const toggle = (section) => {
-  if (section.classList.contains("take-precedence")) {
-    section.className = "comments";
-    section.style.display = "none";
-  } else {
-    section.className += " take-precedence";
-    section.style.display = "block";
+const toggleSection = (section) => {
+  const allToggleSections = document.getElementsByClassName("toggle");
+
+  for (let i = 0; i < allToggleSections.length; i++) {
+    const element = allToggleSections[i];
+
+    if (element === section) {
+      section.classList.toggle("hide");
+    } else {
+      element.classList.add("hide");
+    }
+
+    if (
+      section.classList.contains("toggle") &&
+      !section.classList.contains("hide")
+    ) {
+      postForm.classList.add("hide");
+    } else {
+      postForm.classList.remove("hide");
+    }
   }
 };
 
@@ -44,7 +57,6 @@ const addPost = () => {
 
 const renderPosts = () => {
   const postsDiv = document.getElementsByClassName("posts")[0];
-  // const allPostDivs = document.getElementsByClassName("post"); // DO I NEED THIS??
 
   if (
     !document.getElementById("name").value ||
@@ -57,7 +69,6 @@ const renderPosts = () => {
     removeElementByClass("post");
   }
 
-  // let postIndex = 0;
   for (let p = 0; p < allPosts.length; p++) {
     const postedBy = ` - Posted By: ${allPosts[p].person}`;
 
@@ -87,14 +98,15 @@ const renderPosts = () => {
     commentsButton.style.display = "inline-block";
 
     const commentSection = document.createElement("div");
-    commentSection.className = "comments";
-    // commentSection.style.margin = "30px 50px 30px 50px";
-    commentSection.style.display = "none";
+    commentSection.className = "comments toggle hide";
+    commentSection.style.margin = "10px 50px 10px 50px";
+    // commentSection.style.display = "none";
 
     const commentUl = document.createElement("ul");
     commentSection.appendChild(commentUl);
 
     const commentForm = document.createElement("form");
+    // commentForm.className = "toggle";
     commentForm.style = "margin-top:30px";
     commentForm.onsubmit = (event) => event.preventDefault();
 
@@ -200,7 +212,9 @@ const renderPosts = () => {
     commentSection.appendChild(commentUl);
     commentSection.appendChild(commentForm);
 
-    commentsButton.addEventListener("click", () => toggle(commentSection));
+    commentsButton.addEventListener("click", () => {
+      toggleSection(commentSection);
+    });
 
     const editPostButton = document.createElement("button");
     editPostButton.innerHTML = "edit post";
@@ -210,9 +224,9 @@ const renderPosts = () => {
     editPostButton.style.color = "green";
 
     const editPostForm = document.createElement("form");
-    editPostForm.style = "margin-top:30px";
-    editPostForm.className = "post";
-    editPostForm.style.display = "none";
+    editPostForm.style = "margin:30px 50px 30px 50px";
+    editPostForm.className = "post toggle hide";
+    // editPostForm.style.display = "none";
     editPostForm.onsubmit = (event) => event.preventDefault();
     // editPostForm.style.margin = "30px 20px 30px 70px";
 
@@ -228,7 +242,7 @@ const renderPosts = () => {
 
     editPostMessageDiv.appendChild(editPostMessageArea);
     editPostForm.appendChild(editPostMessageDiv);
-    editPostButton.addEventListener("click", () => toggle(editPostForm));
+    editPostButton.addEventListener("click", () => toggleSection(editPostForm));
 
     const submitEditedPostButton = document.createElement("button");
     submitEditedPostButton.id = "submit-edited-post";
@@ -246,7 +260,7 @@ const renderPosts = () => {
 
       renderPosts();
 
-      toggle(editPostForm);
+      toggleSection(editPostForm);
     });
 
     editPostForm.appendChild(editPostMessageDiv);
